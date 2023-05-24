@@ -11,7 +11,7 @@ import time
 
 def read_file(path_str: str, path_int: str):
     str_data = np.genfromtxt(path_str, delimiter=',', dtype=str)
-    int_data = np.genfromtxt(path_int, delimiter=',', dtype=float)
+    int_data = np.genfromtxt(path_int, delimiter=',', dtype=int)
     return str_data, int_data
 
 

@@ -1,4 +1,5 @@
 import numpy as np
+import DataParser as parser
 # Column indices of data in int data matrix
 BTEAM_INDEX = 1
 OUTS_INDEX = 2
@@ -33,10 +34,8 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
     0 outs | 1 out | 2 outs
     empty, 1B, 2B, 3B, 1B2B, 1B3B, 2B3B, 1B2B3B"""
     base_matrix = np.zeros((3, 8))
-    situation_instances = np.zeros(base_matrix.shape) # tracks number of instances of each situation ex: 150 instances of a runner on first with two outs
-    events_to_add = [] # tracks the indices of base matrix to which we add runs
-    # Splits data array by inning uses string data to check if batting team is the same
-    innings = np.split(outs_scores, np.where(outs_scores[:, 0]))
+    situation_instances = np.zeros(base_matrix.shape)
+    innings = np.split(outs_scores, np.where(outs_scores[:, 0][:-1] != outs_scores[:, 0][1:])[0] + 1)
     for inning in innings:
         matrix, instances = run_ex_inning(inning)
         base_matrix = np.add(base_matrix, matrix)
@@ -45,23 +44,25 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
 
 
 def run_ex_inning(inning: np.ndarray):
-    base_matrix = np.ndarray((3, 8))
+    base_matrix = np.zeros((3, 8))
     instances = np.zeros(base_matrix.shape)
     last_score = 0
     for event in inning:
-        outs = event[1]
-        values = (event[4], event[5], event[6])
-        instances[outs, S_3_element(values)] += 1
-        new_score = event[2 + event[0]]
+        home_away = int(event[0])
+        outs = int(event[1])
+        values = (int(event[4]), int(event[5]), int(event[6]))
+        new_score = event[2 + home_away]
         base_matrix[np.where(instances != 0)] += (new_score - last_score)
         last_score = new_score
+        instances[outs, S_3_element(values)] += 1
     return base_matrix, instances
 
 
 def S_3_element(values):
-    """given the positions of runners on the base paths, returns correct row in the matrix"""
-    S_3 = np.array([(0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1), (1, 1, 1)])
-    return np.where(S_3 == values)
+    """given the positions of runners on the base paths, returns correct row in the matrix."""
+    product = pow(2, values[0]) * pow(3, values[1]) * pow(5, values[2])
+    S_3 = np.array([1, 2, 3, 5, 6, 10, 15, 30])
+    return np.where(S_3 == product)[0]
 
 
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
@@ -75,4 +76,9 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
 
 
 if __name__ == '__main__':
-    pass
+    STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
+    INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'
+    str_data, int_data = parser.read_file(STRING_PATH, INT_PATH)
+    outs_scores = stitch_data(str_data, int_data)
+    matrix = build_run_ex_matrix(outs_scores)
+
