@@ -76,9 +76,8 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
 
 
 if __name__ == '__main__':
-    STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
+    """STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
     INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'
     str_data, int_data = parser.read_file(STRING_PATH, INT_PATH)
-    outs_scores = stitch_data(str_data, int_data)
-    matrix = build_run_ex_matrix(outs_scores)
-
+    outs_scores = stitch_data(str_data, int_data)"""
+    pass
