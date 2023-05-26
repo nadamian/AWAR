@@ -40,6 +40,7 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
         matrix, instances = run_ex_inning(inning)
         base_matrix = np.add(base_matrix, matrix)
         situation_instances = np.add(situation_instances, instances)
+        print("inning done")
     return np.divide(base_matrix, situation_instances)
 
 
@@ -68,7 +69,7 @@ def S_3_element(values):
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
     """returns an array with batting team, outs, visiting score, home score, runners on first, second, third"""
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD]]
-    runners_on[runners_on == '""'] = 0
+    runners_on[runners_on == ''] = 0
     runners_on[runners_on != '0'] = 1
     runners_on_float = runners_on.astype(float)
     outs_scores = int_data[:, [BTEAM_INDEX, OUTS_INDEX, VIS_SCORE, HOME_SCORE]]
@@ -76,8 +77,4 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
 
 
 if __name__ == '__main__':
-    """STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
-    INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'
-    str_data, int_data = parser.read_file(STRING_PATH, INT_PATH)
-    outs_scores = stitch_data(str_data, int_data)"""
     pass
