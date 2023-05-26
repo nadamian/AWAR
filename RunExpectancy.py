@@ -46,15 +46,18 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
 def run_ex_inning(inning: np.ndarray):
     base_matrix = np.zeros((3, 8))
     instances = np.zeros(base_matrix.shape)
-    last_score = 0
-    for event in inning:
-        home_away = int(event[0])
-        outs = int(event[1])
-        values = (int(event[4]), int(event[5]), int(event[6]))
-        new_score = event[2 + home_away]
-        base_matrix[np.where(instances != 0)] += (new_score - last_score)
-        last_score = new_score
-        instances[outs, S_3_element(values)] += 1
+    values = np.array([inning[:, 4], inning[:, 5], inning[:, 6]]).astype(int)
+    home_away = inning[:, 0].astype(np.uint8)
+    outs = inning[:, 1].astype(np.uint8)
+    new_scores = inning[:, home_away + 2]
+    last_scores = np.roll(new_scores, 1, axis=0)
+    last_scores[0] = 0
+
+    for i, _ in inning:
+        base_matrix[np.where(instances != 0)] += (new_scores[i] - last_scores[i])
+        instances[outs[i]] += 1
+        instances[outs[i], S_3_element(values[i])] += 1
+
     return base_matrix, instances
 
 
