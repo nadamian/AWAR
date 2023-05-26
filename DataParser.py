@@ -23,6 +23,6 @@ if __name__ == '__main__':
     str_data, int_data = read_file(STR_PATH, INT_PATH)
     outs_scores = RunExpectancy.stitch_data(str_data, int_data)
     matrix = RunExpectancy.build_run_ex_matrix(outs_scores)
-    np.savetxt(os.path.join(os.getcwd(), "RunMatrix.csv"), matrix)
+    np.savetxt(os.path.join(os.getcwd(), "RunMatrix.csv"), matrix.T)
     endtime = time.time()-t
     print("Runtime: " + str(endtime))

@@ -70,7 +70,7 @@ def S_3_element(values):
 
 
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
-    """returns an array with batting team, outs, visiting score, home score, runners on first, second, third, inning number"""
+    """returns an array with inning, batting team, outs, visiting score, home score, runners on first, second, third"""
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD]]
     runners_on[runners_on == ''] = 0
     runners_on[runners_on != '0'] = 1
