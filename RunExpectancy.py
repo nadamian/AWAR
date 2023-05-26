@@ -1,6 +1,7 @@
 import numpy as np
 import DataParser as parser
 # Column indices of data in int data matrix
+INNING_NUM_INDEX = 0
 BTEAM_INDEX = 1
 OUTS_INDEX = 2
 VIS_SCORE = 3
@@ -35,7 +36,8 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
     empty, 1B, 2B, 3B, 1B2B, 1B3B, 2B3B, 1B2B3B"""
     base_matrix = np.zeros((3, 8))
     situation_instances = np.zeros(base_matrix.shape)
-    innings = np.split(outs_scores, np.where(outs_scores[:, 0][:-1] != outs_scores[:, 0][1:])[0] + 1)
+    split_indices = np.where(np.logical_or(outs_scores[:, 1][:-1] != outs_scores[:, 1][1:], outs_scores[:, 0][:-1] != outs_scores[:, 0][1:]))[0] + 1
+    innings = np.split(outs_scores, split_indices)
     for inning in innings:
         matrix, instances = run_ex_inning(inning)
         base_matrix = np.add(base_matrix, matrix)
@@ -49,13 +51,14 @@ def run_ex_inning(inning: np.ndarray):
     instances = np.zeros(base_matrix.shape)
     last_score = 0
     for event in inning:
-        home_away = int(event[0])
-        outs = int(event[1])
-        values = (int(event[4]), int(event[5]), int(event[6]))
-        new_score = event[2 + home_away]
-        base_matrix[np.where(instances != 0)] += (new_score - last_score)
+        home_away = int(event[1])
+        outs = int(event[2])
+        values = (int(event[5]), int(event[6]), int(event[7]))
+        new_score = event[3 + home_away]
+        base_matrix += (new_score - last_score) * instances
+        occupied_bases = S_3_element(values)
+        instances[outs, occupied_bases] += 1
         last_score = new_score
-        instances[outs, S_3_element(values)] += 1
     return base_matrix, instances
 
 
@@ -67,12 +70,12 @@ def S_3_element(values):
 
 
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
-    """returns an array with batting team, outs, visiting score, home score, runners on first, second, third"""
+    """returns an array with batting team, outs, visiting score, home score, runners on first, second, third, inning number"""
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD]]
     runners_on[runners_on == ''] = 0
     runners_on[runners_on != '0'] = 1
     runners_on_float = runners_on.astype(float)
-    outs_scores = int_data[:, [BTEAM_INDEX, OUTS_INDEX, VIS_SCORE, HOME_SCORE]]
+    outs_scores = int_data[:, [INNING_NUM_INDEX, BTEAM_INDEX, OUTS_INDEX, VIS_SCORE, HOME_SCORE]]
     return np.concatenate((outs_scores, runners_on_float), axis=1)
 
 
