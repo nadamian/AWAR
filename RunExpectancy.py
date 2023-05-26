@@ -39,6 +39,7 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
         matrix, instances = run_ex_inning(inning)
         base_matrix = np.add(base_matrix, matrix)
         situation_instances = np.add(situation_instances, instances)
+        print("inning done")
     return np.divide(base_matrix, situation_instances)
 
 
@@ -78,14 +79,8 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
 
 
 if __name__ == '__main__':
-    argparser = ArgumentParser()
-    argparser.add_argument('strcsv', help='path to string data csv', nargs=1, type=str, dest='str_cvs_path')
-    argparser.add_argument('intcsv', help='path to int data csv', nargs=1, type=str, dest='int_cvs_path')
-    r"""STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
-    INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'"""
-    args = argparser.parse_args()
-    if (args.str_cvs_path is None or args.str_cvs_path == "") or (args.int_cvs_path is None or args.int_cvs_path == ""):
-        raise ValueError("Must provide paths to both string and int data")
-    str_data, int_data = parser.read_file(args.str_cvs_path, args.int_cvs_path)
-    outs_scores = stitch_data(str_data, int_data)
+    """STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
+    INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'
+    str_data, int_data = parser.read_file(STRING_PATH, INT_PATH)
+    outs_scores = stitch_data(str_data, int_data)"""
     pass

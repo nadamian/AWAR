@@ -2,7 +2,7 @@ import numpy as np
 import RunExpectancy
 import time
 from argparse import ArgumentParser
-
+import os
 
 # bevent -y 2022 -f 0,26-74 2022ANA.eva > 2022ANA.csv
 # string inputs: 0,26-31,35-36,38-39,41-42,44-45,47-50,53,55,57,66-74
@@ -27,6 +27,8 @@ if __name__ == '__main__':
     t = time.time()
     args = argparser.parse_args()
     str_data, int_data = read_file(args.str_csv_path[0], args.int_csv_path[0])
-    RunExpectancy.stitch_data(str_data, int_data)
+    outs_scores = RunExpectancy.stitch_data(str_data, int_data)
+    matrix = RunExpectancy.build_run_ex_matrix(outs_scores)
+    np.savetxt(os.path.join(os.getcwd(), "RunMatrix.csv"), matrix)
     endtime = time.time()-t
     print("Runtime: " + str(endtime))
