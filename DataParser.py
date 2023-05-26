@@ -1,6 +1,8 @@
 import numpy as np
 import RunExpectancy
 import time
+from argparse import ArgumentParser
+
 
 # bevent -y 2022 -f 0,26-74 2022ANA.eva > 2022ANA.csv
 # string inputs: 0,26-31,35-36,38-39,41-42,44-45,47-50,53,55,57,66-74
@@ -16,10 +18,15 @@ def read_file(path_str: str, path_int: str):
 
 
 if __name__ == '__main__':
+    argparser = ArgumentParser()
+    argparser.add_argument('--strcsv', help='path to string data csv', type=str, nargs=1, dest='str_csv_path')
+    argparser.add_argument('--intcsv', help='path to int data csv', type=str, nargs=1, dest='int_csv_path')
+    args = argparser.parse_args()
+    if (args.str_csv_path is None or args.str_csv_path == "") or (args.int_csv_path is None or args.int_csv_path == ""):
+        raise ValueError("Must provide paths to both string and int data")
     t = time.time()
-    path_str = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
-    path_int = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'
-    str_data, int_data = read_file(path_str, path_int)
+    args = argparser.parse_args()
+    str_data, int_data = read_file(args.str_csv_path[0], args.int_csv_path[0])
     RunExpectancy.stitch_data(str_data, int_data)
     endtime = time.time()-t
     print("Runtime: " + str(endtime))

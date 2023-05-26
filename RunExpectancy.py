@@ -1,5 +1,4 @@
 import numpy as np
-import DataParser as parser
 # Column indices of data in int data matrix
 BTEAM_INDEX = 1
 OUTS_INDEX = 2
@@ -79,8 +78,14 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
 
 
 if __name__ == '__main__':
-    """STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
-    INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'
-    str_data, int_data = parser.read_file(STRING_PATH, INT_PATH)
-    outs_scores = stitch_data(str_data, int_data)"""
+    argparser = ArgumentParser()
+    argparser.add_argument('strcsv', help='path to string data csv', nargs=1, type=str, dest='str_cvs_path')
+    argparser.add_argument('intcsv', help='path to int data csv', nargs=1, type=str, dest='int_cvs_path')
+    r"""STRING_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANASTR.csv'
+    INT_PATH = r'C:\Users\natad\PycharmProjects\AWAR\Data\2022\2022ANAINT.csv'"""
+    args = argparser.parse_args()
+    if (args.str_cvs_path is None or args.str_cvs_path == "") or (args.int_cvs_path is None or args.int_cvs_path == ""):
+        raise ValueError("Must provide paths to both string and int data")
+    str_data, int_data = parser.read_file(args.str_cvs_path, args.int_cvs_path)
+    outs_scores = stitch_data(str_data, int_data)
     pass
