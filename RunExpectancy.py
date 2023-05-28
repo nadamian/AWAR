@@ -13,7 +13,8 @@ ON_SECOND = 2
 ON_THIRD = 3
 GAME_END = 31
 
-# TODO need final scores from BGAME : (
+# TODO sum runs and roll back by one
+
 def expectancy(str_data: np.ndarray, int_data):
     runners_on_probs = runners_on_base(str_data)
 
@@ -32,46 +33,37 @@ def scores_from_prob(int_data: np.ndarray):
     evt_data = int_data[:, [2, 12, 13, 14]]
 
 
-def build_run_ex_matrix(outs_scores: np.ndarray, games_final: np.ndarray, ids):
+def build_run_ex_matrix(outs_scores: np.ndarray):
     """Matrix Structure:
     0 outs | 1 out | 2 outs
     empty, 1B, 2B, 3B, 1B2B, 1B3B, 2B3B, 1B2B3B"""
     base_matrix = np.zeros((3, 8))
     situation_instances = np.zeros(base_matrix.shape)
+    score_on_play = np.roll(outs_scores[:, 3], -1) - outs_scores[:, 3]
+    score_on_play[np.where(score_on_play < 0)] = 0
+    outs_scores[:, 3] = score_on_play
     split_indices = np.where(np.logical_or(outs_scores[:, 1][:-1] != outs_scores[:, 1][1:], outs_scores[:, 0][:-1] != outs_scores[:, 0][1:]))[0] + 1
     innings = np.split(outs_scores, split_indices)
-    index = 0
     for inning in innings:
-        matrix, instances, new_ind = run_ex_inning(inning, games_final, ids, index)
+        if (np.isin(1, inning[:, 7]) or inning[0, 0] >= 9) and (int(inning[0, 1]) == 1): # alt: check_walk_off(games_final, inning, game_index)
+            continue
+        matrix, instances= run_ex_inning(inning)
         base_matrix = np.add(base_matrix, matrix)
         situation_instances = np.add(situation_instances, instances)
-        index = new_ind
         print("inning done")
     return np.divide(base_matrix, situation_instances)
 
 
-def run_ex_inning(inning: np.ndarray, games_final: np.ndarray, ids: np.ndarray, index: int):
+def run_ex_inning(inning: np.ndarray):
     base_matrix = np.zeros((3, 8))
     instances = np.zeros(base_matrix.shape)
-    last_score = 0
     for event in inning:
-        home_away = int(event[1])
         outs = int(event[2])
-        values = (int(event[5]), int(event[6]), int(event[7]))
-        new_score = event[3 + home_away]
-        base_matrix += (new_score - last_score) * instances
+        values = (int(event[4]), int(event[5]), int(event[6]))
         occupied_bases = S_3_element(values)
         instances[outs, occupied_bases] += 1
-        last_score = new_score
-        if event[8] == 1:
-            if event[3] == event[4]:
-                print('penis')
-            game_id = ids[index]
-            final_index = np.where(games_final[:, 0] == game_id)[0][0]
-            final_score = int(games_final[final_index, 1 + home_away])
-            base_matrix += (final_score - last_score) * instances
-        index += 1
-    return base_matrix, instances, index
+        base_matrix += event[3] * instances
+    return base_matrix, instances
 
 
 def S_3_element(values):
@@ -82,14 +74,15 @@ def S_3_element(values):
 
 
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
-    """returns an array with inning, batting team, outs, visiting score, home score, runners on first, second, third, game end flag
+    """returns an array with inning, batting team, outs, total score, runners on first, second, third, game end flag
     also returns an indexed array of gameIDs for comparison"""
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD, GAME_END]]
     runners_on[np.logical_or(runners_on == '', runners_on == 'F')] = 0
     runners_on[runners_on != '0'] = 1
     runners_on_float = runners_on.astype(float)
-    outs_scores = int_data[:, [INNING_NUM_INDEX, BTEAM_INDEX, OUTS_INDEX, VIS_SCORE, HOME_SCORE]]
-    return np.concatenate((outs_scores, runners_on_float), axis=1), str_data[:, 0]
+    int_data[:, VIS_SCORE] += int_data[:, HOME_SCORE]
+    outs_scores = int_data[:, [INNING_NUM_INDEX, BTEAM_INDEX, OUTS_INDEX, VIS_SCORE]]
+    return np.concatenate((outs_scores, runners_on_float), axis=1)
 
 if __name__ == '__main__':
     pass
