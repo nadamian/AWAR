@@ -1,6 +1,8 @@
 import numpy as np
 import os
 import DataParser as parser
+import Utils
+
 # Column indices of data in int data matrix
 INNING_NUM_INDEX = 0
 BTEAM_INDEX = 1
@@ -72,9 +74,7 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
     """returns an array with inning, batting team, outs, total score, runners on first, second, third, game end flag
     also returns an indexed array of gameIDs for comparison"""
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD, GAME_END]]
-    runners_on[np.logical_or(runners_on == '', runners_on == 'F')] = 0
-    runners_on[runners_on != '0'] = 1
-    runners_on_float = runners_on.astype(float)
+    runners_on_float = Utils.runners_on_binary(runners_on)
     int_data[:, VIS_SCORE] += int_data[:, HOME_SCORE]
     outs_scores = int_data[:, [INNING_NUM_INDEX, BTEAM_INDEX, OUTS_INDEX, VIS_SCORE, BAT_DEST, FIRST_DEST, SECOND_DEST, THIRD_DEST]]
     return np.concatenate((outs_scores, runners_on_float), axis=1)
