@@ -30,7 +30,7 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
     """score_on_play = np.roll(outs_scores[:, 3], -1) - outs_scores[:, 3]
     score_on_play[np.where(score_on_play < 0)] = 0
     outs_scores[:, 3] = score_on_play"""
-    outs_scores = play_score(outs_scores)
+    outs_scores = Utils.play_score(outs_scores)
     split_indices = np.where(np.logical_or(outs_scores[:, 1][:-1] != outs_scores[:, 1][1:], outs_scores[:, 0][:-1] != outs_scores[:, 0][1:]))[0] + 1
     innings = np.split(outs_scores, split_indices)
     scores = get_game_scores()
@@ -56,18 +56,11 @@ def run_ex_inning(inning: np.ndarray):
     for event in inning:
         outs = int(event[2])
         values = (int(event[8]), int(event[9]), int(event[10]))
-        occupied_bases = S_3_element(values)
+        occupied_bases = Utils.S_3_element(values)
         instances[outs, occupied_bases] += 1
         # Event[3] or event[4] depending on scoring style
         base_matrix += event[4] * instances
     return base_matrix, instances
-
-
-def S_3_element(values):
-    """given the positions of runners on the base paths, returns correct row in the matrix."""
-    product = pow(2, values[0]) * pow(3, values[1]) * pow(5, values[2])
-    S_3 = np.array([1, 2, 3, 5, 6, 10, 15, 30])
-    return np.where(S_3 == product)[0]
 
 
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
@@ -79,12 +72,6 @@ def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
     outs_scores = int_data[:, [INNING_NUM_INDEX, BTEAM_INDEX, OUTS_INDEX, VIS_SCORE, BAT_DEST, FIRST_DEST, SECOND_DEST, THIRD_DEST]]
     return np.concatenate((outs_scores, runners_on_float), axis=1)
 
-def play_score(outs_scores: np.ndarray):
-    runner_dests = outs_scores[:, [4, 5, 6 ,7]]
-    runner_dests[runner_dests <= 3] = 0
-    runner_dests[runner_dests > 3] = 1
-    outs_scores[:, 4] = np.sum(runner_dests, axis=1)
-    return outs_scores
 
 def get_game_scores():
     games = np.genfromtxt(os.path.join(BASE_DATA_PATH, '2019GAME.csv'), delimiter=',', dtype=int)
