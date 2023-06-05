@@ -12,7 +12,7 @@ def read_raw_data(year: str):
     int_path = os.path.join(BASE_DATA_PATH, year + 'INT.csv')
     str_data = np.genfromtxt(str_path, delimiter=',', dtype=str)
     int_data = np.genfromtxt(int_path, delimiter=',', dtype=int)
-    return str_data, int_data,
+    return str_data, int_data
 
 def generate_expectancy_matrix(year: str):
     t = time.time()

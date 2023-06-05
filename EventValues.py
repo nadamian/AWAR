@@ -39,12 +39,14 @@ def get_event_values(sitch_events: np.ndarray, matrix: np.ndarray):
     matrix_vals_after = matrix[after[:, 2], runners_after]
     matrix_vals_after[switch_indices] = 0
     runs_generated = before[:, 4] + matrix_vals_after - matrix_vals_before
-    # TODO something not working
-    runs_generated[-1] = np.nan
     # not filling event_run_expectancies properly
     for i in range(runs_generated.shape[0]):
+        if before[i][3] == 8:
+            if before[i][2] != after[i][2]:
+                before[i][3] = 6
+            else:
+                before[i][3] = 4
         event_run_expectancies[before[i][3]].append(runs_generated[i])
-    e_r_e = np.array(event_run_expectancies)
     means = []
     for i in range(len(event_run_expectancies)):
         if len(event_run_expectancies[i]) > 0:
