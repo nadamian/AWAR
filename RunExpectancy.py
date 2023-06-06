@@ -1,6 +1,5 @@
 import numpy as np
 import os
-import DataParser as parser
 import Utils
 
 # Column indices of data in int data matrix

@@ -29,7 +29,7 @@ def generate_event_values(year: str):
     situation_events = EventValues.stitch_data(str_data, int_data)
     matrix = load_run_matrix(year)
     values = EventValues.get_event_values(situation_events, matrix)
-    np.savetxt(os.path.join(BASE_DATA_PATH, year + 'EventValues.csv'), values)
+    np.savetxt(os.path.join(BASE_DATA_PATH, year + 'EventValues.csv'), values, delimiter=',')
     endtime = time.time() - t
     print('Runtime: ' + str(endtime))
 
@@ -37,6 +37,11 @@ def load_run_matrix(year: str):
     path = os.path.join(BASE_DATA_PATH, year+'RunMatrix.csv')
     matrix = np.genfromtxt(path, delimiter=',', dtype=float)
     return matrix.T
+
+def load_linear_weights(year: str):
+    path = os.path.join(BASE_DATA_PATH, year+'EventValues.csv')
+    weights = np.genfromtxt(path, delimiter=',', dtype=float)
+    return weights
 
 if __name__ == '__main__':
     #generate_expectancy_matrix('2019')

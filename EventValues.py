@@ -20,6 +20,9 @@ ON_SECOND = 2
 ON_THIRD = 3
 GAME_END = 31
 
+
+# TODO add baserunning values for advancing extra bases on different hit types
+
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD, GAME_END]]
     runners_on_int = Utils.runners_on_binary(runners_on)
