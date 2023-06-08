@@ -15,10 +15,10 @@ SECOND_DEST = 18
 THIRD_DEST = 19
 EVENT_TYPE = 7
 # Column indices of data in str data matrix
-ON_FIRST = 1
-ON_SECOND = 2
-ON_THIRD = 3
-GAME_END = 31
+ON_FIRST = 2
+ON_SECOND = 3
+ON_THIRD = 4
+GAME_END = 32
 
 
 # TODO add baserunning values for advancing extra bases on different hit types

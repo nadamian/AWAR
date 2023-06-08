@@ -63,7 +63,7 @@ def merge_games(year: str):
     df_csv_append_game.to_csv(os.path.join(path, year + "GAME.csv"), header=False, index=False)
 
 if __name__ == '__main__':
-    #event_process("2019")
-    #merge_files("2019")
-    game_process("2019")
-    merge_games("2019")
+    event_process("2019")
+    merge_files("2019")
+    #game_process("2019")
+    #merge_games("2019")

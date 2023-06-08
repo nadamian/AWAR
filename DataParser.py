@@ -1,6 +1,5 @@
 import numpy as np
-import RunExpectancy
-import EventValues
+import RunExpectancy, EventValues, PlayerStats
 import time
 import os
 
@@ -33,6 +32,15 @@ def generate_event_values(year: str):
     endtime = time.time() - t
     print('Runtime: ' + str(endtime))
 
+def get_player_batting_runs(year: str):
+    t = time.time()
+    str_data, int_data = read_raw_data(year)
+    weights = load_linear_weights(year)
+    PlayerStats.get_batter_stats(str_data, int_data, weights)
+    endtime = time.time() - t
+    print('Runtime: ' + str(endtime))
+
+
 def load_run_matrix(year: str):
     path = os.path.join(BASE_DATA_PATH, year+'RunMatrix.csv')
     matrix = np.genfromtxt(path, delimiter=',', dtype=float)
@@ -45,4 +53,5 @@ def load_linear_weights(year: str):
 
 if __name__ == '__main__':
     #generate_expectancy_matrix('2019')
-    generate_event_values('2019')
+    #generate_event_values('2019')
+    get_player_batting_runs('2019')
