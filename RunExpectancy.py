@@ -13,10 +13,10 @@ FIRST_DEST = 17
 SECOND_DEST = 18
 THIRD_DEST = 19
 # Column indices of data in str data matrix
-ON_FIRST = 2
-ON_SECOND = 3
-ON_THIRD = 4
-GAME_END = 32
+ON_FIRST = 4
+ON_SECOND = 5
+ON_THIRD = 6
+GAME_END = 34
 BASE_DATA_PATH = os.path.join(os.getcwd(), 'Data', 'Output')
 
 """Run expectancy matrix and helper methods"""

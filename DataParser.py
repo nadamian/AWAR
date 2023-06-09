@@ -27,8 +27,9 @@ def generate_event_values(year: str):
     str_data, int_data = read_raw_data(year)
     situation_events = EventValues.stitch_data(str_data, int_data)
     matrix = load_run_matrix(year)
-    values = EventValues.get_event_values(situation_events, matrix)
+    values, league_stats = EventValues.get_event_values(situation_events, matrix)
     np.savetxt(os.path.join(BASE_DATA_PATH, year + 'EventValues.csv'), values, delimiter=',')
+    np.savetxt(os.path.join(BASE_DATA_PATH, year + 'LeagueStats.csv'), league_stats, delimiter=',')
     endtime = time.time() - t
     print('Runtime: ' + str(endtime))
 
@@ -36,7 +37,8 @@ def get_player_batting_runs(year: str):
     t = time.time()
     str_data, int_data = read_raw_data(year)
     weights = load_linear_weights(year)
-    PlayerStats.get_batter_stats(str_data, int_data, weights)
+    player_wraa = PlayerStats.get_batter_stats(str_data, int_data, weights)
+    np.savetxt(os.path.join(BASE_DATA_PATH, year + 'PlayerWRAA.csv'), player_wraa, delimiter=',', fmt='%s')
     endtime = time.time() - t
     print('Runtime: ' + str(endtime))
 

@@ -15,10 +15,10 @@ SECOND_DEST = 18
 THIRD_DEST = 19
 EVENT_TYPE = 7
 # Column indices of data in str data matrix
-ON_FIRST = 2
-ON_SECOND = 3
-ON_THIRD = 4
-GAME_END = 32
+ON_FIRST = 4
+ON_SECOND = 5
+ON_THIRD = 6
+GAME_END = 34
 
 
 # TODO add baserunning values for advancing extra bases on different hit types
@@ -56,4 +56,4 @@ def get_event_values(sitch_events: np.ndarray, matrix: np.ndarray):
             means.append(statistics.fmean(event_run_expectancies[i]))
         else:
             means.append(0)
-    return np.array(means)
+    return np.array(means), np.sum(sitch_events[:, 4])
