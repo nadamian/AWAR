@@ -35,9 +35,10 @@ def generate_event_values(year: str):
 
 def get_player_batting_runs(year: str):
     t = time.time()
+    park_factors = load_park_factors(year)
     str_data, int_data = read_raw_data(year)
     weights = load_linear_weights(year)
-    player_wraa = PlayerStats.get_batter_stats(str_data, int_data, weights)
+    player_wraa, team_percentages, teams = PlayerStats.get_batter_stats(str_data, int_data, weights, park_factors)
     np.savetxt(os.path.join(BASE_DATA_PATH, year + 'PlayerWRAA.csv'), player_wraa, delimiter=',', fmt='%s')
     endtime = time.time() - t
     print('Runtime: ' + str(endtime))
@@ -52,6 +53,11 @@ def load_linear_weights(year: str):
     path = os.path.join(BASE_DATA_PATH, year+'EventValues.csv')
     weights = np.genfromtxt(path, delimiter=',', dtype=float)
     return weights
+
+def load_park_factors(year: str):
+    path = os.path.join(BASE_DATA_PATH, year+'ParkFactors.csv')
+    park_factors = np.genfromtxt(path, delimiter=',', dtype=float)
+    return park_factors
 
 if __name__ == '__main__':
     #generate_expectancy_matrix('2019')
