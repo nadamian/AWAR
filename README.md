@@ -13,6 +13,10 @@ Currently Finished:
 
 3: I have finished writing the functions that compute the weighted values of various batting and baserunning events for a given year that will later enable the calculation of a player's total run contribution.
 
+4: I implemented a very basic method to park adjust run contribution. Down the line I will calculate expectancy matrix and weights separately for each league in years predating the balanced schedule. I would also consider park adjusting for each batted ball event and for batter handedness. 
+
 In progress:
 
-4 I'm currently working on the functions to park and league adjust player run contribution.
+5: Developing my own version of UBR for baserunning. 
+6: Writing a method to exclude pitcher hitting from RE24 and linear weight calculations. This shouldn't require any existing code to be rewritten, I should be able to filter it out ahead of time but it might require me to
+get a little creative with handling skipped plate appearences and accounting for any runs they score. We'll see when we get there. 
