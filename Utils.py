@@ -20,9 +20,10 @@ def S_3_list(values: np.ndarray):
     return np.array(inds)
 
 def play_score(outs_scores: np.ndarray):
-    runner_dests = outs_scores[:, [4, 5, 6 ,7]]
-    runner_dests[runner_dests <= 3] = 0
-    runner_dests[runner_dests > 3] = 1
-    outs_scores[:, 4] = np.sum(runner_dests, axis=1)
+    """Determines number of runners scoring on a given play based on each runner's destination"""
+    runner_dests = outs_scores[:, [4, 5, 6 ,7]] # Destinations of batter and runners on each base
+    runner_dests[runner_dests <= 3] = 0 # Ignore anyone who doesn't score
+    runner_dests[runner_dests > 3] = 1  # Everyone who scores is worth 1 run
+    outs_scores[:, 4] = np.sum(runner_dests, axis=1) # Sum of scores on each play
     return outs_scores
 
