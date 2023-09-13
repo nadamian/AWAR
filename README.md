@@ -3,7 +3,9 @@ WAR refers to the commonly used baseball statistic, wins above replacement which
 For the uninitiated, this article is a good introduction: https://library.fangraphs.com/misc/war/, as is this video: https://www.youtube.com/watch?v=ipD053CE3PI&t=567s.
 The purpose of this project is twofold. First I want to develop my comfort working with numpy to (hopefully) efficiently manipulate large datasets.
 Second, I hope to adress issues I have with the methods sites like baseball reference and fangraphs use to calculate war, particularly as it pertains to 
-assessing the values of stolen bases. Most of the data I take issue with can be found on this page at fangraphs: https://www.fangraphs.com/guts.aspx?type=cn 
+assessing the values of stolen bases. Most of the data I take issue with can be found on this page at fangraphs: https://www.fangraphs.com/guts.aspx?type=cn. In particular, the fact that the value of a stolen base is taken to be 
+static, rather than varying with the run environment as all other events do, is clearly a methodological error. Additionally, I know that Fangraphs does not differentiate between the value of a strikeout vs a fly-out vs a ground out 
+from the batter's perspective. I don't have the data to do this yet but I would like to add that distinction to my project as well. 
 
 Currently Finished: 
 
