@@ -15,6 +15,8 @@ ON_SECOND = 4
 ON_THIRD = 5
 BAT_EVENTS = np.array([2, 3, 14, 16, 17, 19, 20, 21, 22, 23])
 RUN_EVENTS = np.array([4, 6, 8, 9, 10])
+
+
 def get_batter_stats(str_data: np.ndarray, int_data: np.ndarray, weights: np.ndarray, park_factors: np.ndarray):
     """Returns each batter's season wRAA"""
     ids, events, away_home, bteam = stitch_data(str_data, int_data)
@@ -41,7 +43,7 @@ def get_batter_stats(str_data: np.ndarray, int_data: np.ndarray, weights: np.nda
 
     # dot product of event weights vector with batter events matrix to get batter total run contribution
     league_runs = np.dot(league_stats, bat_weights)
-    league_pprc = league_runs / league_events #  PPRC = per plate appearance run creation
+    league_pprc = league_runs / league_events  # PPRC = per plate appearance run creation
 
     # Plate appearances and run creation for individual players
     player_pa = np.sum(player_stats, axis=1)
@@ -62,9 +64,9 @@ def park_adjust(hitters: np.ndarray, player_wraa: np.ndarray, team_percentages: 
     for i in range(hitters.shape[0]):
         if team_percentages[i][0] is not np.nan:
             # Setup all variables
-            teams = np.where(team_percentages[i] != 0) # Gets teams the player hit for in home games
-            factors = park_factors[teams] / 100 # Gets the park factors for those home parks
-            percentages = team_percentages[i][teams] # Percentage of player's PA taken for each team
+            teams = np.where(team_percentages[i] != 0)  # Gets teams the player hit for in home games
+            factors = park_factors[teams] / 100  # Gets the park factors for those home parks
+            percentages = team_percentages[i][teams]  # Percentage of player's PA taken for each team
             totals_home_pa = np.sum(team_time_totals[i][teams])
             wraa = player_wraa[i]
             percentage_factors = np.dot(factors, percentages)
@@ -74,6 +76,7 @@ def park_adjust(hitters: np.ndarray, player_wraa: np.ndarray, team_percentages: 
             adjustment = (league_pprc - percentage_factors * league_pprc) * totals_home_pa
             batting_runs[i] = wraa + adjustment
     return batting_runs
+
 
 def team_time(away_home:np.ndarray, bteam: np.ndarray, hitter_list: np.ndarray):
     """Determines percentage of a player's plate appearances taken for each team, additionally returns
@@ -96,11 +99,13 @@ def team_time(away_home:np.ndarray, bteam: np.ndarray, hitter_list: np.ndarray):
         for team in h_teams:
             x_index = np.where(uteamsnp == team)[0]
             team_percentages[i][x_index] = np.count_nonzero(team == home_teams)
+    team_percentages[np.where(np.isnan(team_percentages))] = 0
     team_totals = np.sum(team_percentages, axis=1)
     team_time_totals = team_percentages
+    team_totals[np.where(team_totals == 0)] = 1
     team_percentages /= team_totals[:, None]
-    w = np.where(np.isnan(team_percentages))
     team_percentages[np.where(np.isnan(team_percentages))] = 0
+    w = np.where(np.isnan(team_percentages))
     return team_percentages, uteamsnp, team_time_totals
 
 

@@ -20,14 +20,15 @@ GAME_END = 33
 
 BASE_DATA_PATH = os.path.join(os.getcwd(), 'Data', 'Output')
 
+
 # TODO these methods should be friendly to splitting leagues by home park. Also intend to remove all non-Ohtani pitcher
 #   PAs which should be possible in preprocessing
 def build_run_ex_matrix(outs_scores: np.ndarray):
     """Builds the run expectancy matrix dropping all potential walk-off half-innings"""
     # Setup and data manipulation
-    base_matrix = np.zeros((3, 8)) # Create empty matrix, 3 possible out states, 8 base occupancy states
-    situation_instances = np.zeros(base_matrix.shape) # Tracks number of times each state combination in the matrix occurs
-    outs_scores = Utils.play_score(outs_scores) # Gets number of runners scoring on each play
+    base_matrix = np.zeros((3, 8))  # Create empty matrix, 3 possible out states, 8 base occupancy states
+    situation_instances = np.zeros(base_matrix.shape)  # Tracks number of times each state combination in the matrix occurs
+    outs_scores = Utils.play_score(outs_scores)  # Gets number of runners scoring on each play
 
     # Splits data set into half innings to enable determining number of runs scored after each event in given half
     split_indices = np.where(np.logical_or(outs_scores[:, 1][:-1] != outs_scores[:, 1][1:], outs_scores[:, 0][:-1] != outs_scores[:, 0][1:]))[0] + 1
@@ -38,13 +39,13 @@ def build_run_ex_matrix(outs_scores: np.ndarray):
         # Skips half innings in which there is potential for a walk-off
         if (np.isin(1, inning[:, 11]) or inning[0, 0] >= 9) and (int(inning[0, 1]) == 1):
             continue
-        matrix, instances= run_ex_inning(inning) # Gets matrix for given half inning
+        matrix, instances = run_ex_inning(inning)  # Gets matrix for given half inning
 
         # Adds matrix and instances from half inning to season totals
         base_matrix = np.add(base_matrix, matrix)
         situation_instances = np.add(situation_instances, instances)
-        print("inning done")
     return np.divide(base_matrix, situation_instances)
+
 
 def build_run_ex_matrix_common(outs_scores: np.ndarray):
     """Builds the run expectancy matrix only dropping walk-offs."""
@@ -74,14 +75,14 @@ def build_run_ex_matrix_common(outs_scores: np.ndarray):
 
 def run_ex_inning(inning: np.ndarray):
     """Determines run expectancy contributions for a given inning"""
-    base_matrix = np.zeros((3, 8)) # Same as outside base matrix
-    instances = np.zeros(base_matrix.shape) # Same as outside
+    base_matrix = np.zeros((3, 8))  # Same as outside base matrix
+    instances = np.zeros(base_matrix.shape)  # Same as outside
     # Iterates through each event. Sequence is essential here so I haven't figured out a way to get rid of this loop.
     for event in inning:
-        outs = int(event[2]) # Number of outs at play start
-        values = (int(event[8]), int(event[9]), int(event[10])) # Yes/No for 1st-3rd occupied
-        occupied_bases = Utils.S_3_element(values) # Returns index in base matrix corresponding to base occupancy state
-        instances[outs, occupied_bases] += 1 # Increments instances of base, outs state
+        outs = int(event[2])  # Number of outs at play start
+        values = (int(event[8]), int(event[9]), int(event[10]))  # Yes/No for 1st-3rd occupied
+        occupied_bases = Utils.S_3_element(values)  # Returns index in base matrix corresponding to base occupancy state
+        instances[outs, occupied_bases] += 1  # Increments instances of base, outs state
         # Event[3] or event[4] depending on scoring style
         """The runs scored on this play are credited to each instance of each base occupancy state, thus they're
         included multiple times if a state has occurred multiple times already"""
@@ -104,6 +105,7 @@ def get_game_scores():
     games = np.genfromtxt(os.path.join(BASE_DATA_PATH, '2019GAME.csv'), delimiter=',', dtype=int)
     scores = games[:, 1] + games[:, 2]
     return scores
+
 
 if __name__ == '__main__':
     pass

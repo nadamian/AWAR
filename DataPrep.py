@@ -39,6 +39,7 @@ def game_process(year: str):
         subprocess.run(["bgame", "-y", year, "-f", GAME_INDICES, year + team + ".EVN", ">", year + team + "GAME.csv"],
                        shell=True, cwd=path)
 
+
 def merge_files(year: str):
     """Merges individual team data files into one large file for a given season and puts it in the output data
     directory"""
@@ -58,6 +59,7 @@ def merge_files(year: str):
     df_csv_append_int.to_csv(os.path.join(path, year + "INT.csv"), header=False, index=False)
     df_csv_append_str.to_csv(os.path.join(path, year + "STR.csv"), header=False, index=False)
 
+
 def merge_games(year: str):
     path = os.path.join(BASE_DATA_PATH, OUTPUT_DIR)
     df_csv_append_game = pd.DataFrame()
@@ -69,8 +71,9 @@ def merge_games(year: str):
         df_csv_append_game = df_csv_append_game.append(df, ignore_index=True)
     df_csv_append_game.to_csv(os.path.join(path, year + "GAME.csv"), header=False, index=False)
 
+
 if __name__ == '__main__':
     event_process("2019")
     merge_files("2019")
-    #game_process("2019")
-    #merge_games("2019")
+    # game_process("2019")
+    # merge_games("2019")

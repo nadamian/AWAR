@@ -21,15 +21,17 @@ ON_THIRD = 5
 GAME_END = 33
 BAT_EVENTS = np.array([2, 3, 14, 15, 16, 17, 19, 20, 21, 22, 23])
 
-# TODO add baserunning values for advancing extra bases on different hit types
 
+# TODO add baserunning values for advancing extra bases on different hit types
 def stitch_data(str_data: np.ndarray, int_data: np.ndarray):
     """returns an array with inning number, batting team, outs, event type, batter and runners on 1st-3rd destinations
     and base occupancy binary."""
     runners_on = str_data[:, [ON_FIRST, ON_SECOND, ON_THIRD, GAME_END]]
-    runners_on_int = Utils.runners_on_binary(runners_on)
+    runners_on_copy = runners_on
+    runners_on_int = Utils.runners_on_binary(runners_on_copy)
     sitch_events = int_data[:, [INNING_NUM_INDEX, BTEAM_INDEX, OUTS_INDEX, EVENT_TYPE, BAT_DEST, FIRST_DEST, SECOND_DEST, THIRD_DEST]]
     return np.concatenate((sitch_events, runners_on_int), axis=1, dtype=int)
+
 
 def get_event_values(sitch_events: np.ndarray, matrix: np.ndarray):
     """Gets value weights for each batting event."""
@@ -57,9 +59,9 @@ def get_event_values(sitch_events: np.ndarray, matrix: np.ndarray):
     runs_generated = before[:, 4] + matrix_vals_after - matrix_vals_before
 
     for i in range(runs_generated.shape[0]):
-        # Retrosheet doesn't differentiate between pick-offs that result in an out and those that result in the runner taking
-        # the extra base so here we split those into either stolen bases or caught stealing on the runners side.
-        # we won't do this when calculating pitcher war as a runner's
+        """Retrosheet doesn't differentiate between pick-offs that result in an out and those that result in the runner taking
+        the extra base so here we split those into either stolen bases or caught stealing on the runners side.
+        we won't do this when calculating pitcher war"""
         if before[i][3] == 8:
             if before[i][2] != after[i][2]:
                 before[i][3] = 6
