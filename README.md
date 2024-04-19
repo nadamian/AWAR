@@ -1,6 +1,6 @@
 # AWAR
 WAR refers to the commonly used baseball statistic, wins above replacement which attempts to measure the number of wins contributed by a given player relative to a hypothetical minor league replacement.
-For the uninitiated, this article is a good introduction: https://library.fangraphs.com/misc/war/, as is this video: https://www.youtube.com/watch?v=ipD053CE3PI&t=567s.
+For the uninitiated, this article is a good introduction: https://library.fangraphs.com/misc/war/.
 The purpose of this project is twofold. First I want to develop my comfort working with NumPy to (hopefully) efficiently manipulate large datasets.
 Second, I hope to adress issues I have with the methods sites like Baseball Reference and FanGraphs use to calculate war, particularly as it pertains to 
 assessing the values of stolen bases. Most of the data I take issue with can be found on this page at FanGraphs: https://www.fangraphs.com/guts.aspx?type=cn. In particular, the fact that the value of a stolen base is taken to be 
