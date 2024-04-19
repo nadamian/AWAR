@@ -26,5 +26,5 @@ get a little creative with handling skipped plate appearances and accounting for
 Findings so far: 
 I am happy with the values produced by stolen bases. I've run data for the 2019 and 2022 as examples. Fangraphs estimates the value of a stolen base at a static 0.2 runs which is based on old data taking an average across many seasons. 
 In 2019 the average run contribution from a stolen base was 0.177 according to my methodology. It was 0.182 in 2022. This makes sense because recent seasons have dealt with a lower rate of balls in play, 
-a common talking point in baseball communities. Additionally, throughout the 2010s we saw rising home run rates culminating in 2019 having the highest league-wide home run rate in MLB history. 
+a common talking point in baseball communities. Additionally, throughout the 2010s we saw rising home run rates culminating in the highest league-wide home run rate in MLB history in 2019. 
 A high home run rate and a low rate of balls in play will both necessarily have a depressing effect on the value of a stolen base so both of these results are in line with expectations.
